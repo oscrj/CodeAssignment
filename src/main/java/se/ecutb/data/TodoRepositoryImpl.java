@@ -4,9 +4,7 @@ import org.springframework.stereotype.Component;
 import se.ecutb.model.Todo;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,8 +32,7 @@ public class TodoRepositoryImpl implements TodoRepository {
     @Override
     public List<Todo> findByTaskDescriptionContains(String taskDescription) {
         return todoList.stream()
-
-                .filter(todo -> todo.getTaskDescription().equalsIgnoreCase(taskDescription))
+                .filter(todo -> todo.getTaskDescription().toLowerCase().contains(taskDescription))
                 .collect(Collectors.toList());
     }
 
@@ -55,8 +52,9 @@ public class TodoRepositoryImpl implements TodoRepository {
 
     @Override
     public List<Todo> findByDeadLineBetween(LocalDate start, LocalDate end) {
-        Period period = Period.between(start, end);
-        return null;
+        return todoList.stream()
+                .filter(todo -> todo.getDeadLine().isBefore(end) && todo.getDeadLine().isAfter(start))
+                .collect(Collectors.toList());
 
     }
 
