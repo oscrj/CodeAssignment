@@ -1,5 +1,6 @@
 package se.ecutb.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.ecutb.dto.PersonDto;
 import se.ecutb.dto.PersonDtoWithTodo;

@@ -44,6 +44,11 @@ public class PersonRepositoryImpl implements PersonRepository{
 
     @Override
     public List<Person> findByAddress(Address address) {
+        if(address == null){
+            return personList.stream()
+                    .filter(person -> person.getAddress() == null)
+                    .collect(Collectors.toList());
+        }
         return personList.stream()
                 .filter(person -> person.getAddress() != null)
                 .filter(person -> person.getAddress().equals(address))
