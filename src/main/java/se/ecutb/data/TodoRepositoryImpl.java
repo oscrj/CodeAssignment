@@ -3,9 +3,10 @@ package se.ecutb.data;
 import org.springframework.stereotype.Component;
 import se.ecutb.model.Todo;
 
-import java.security.PrivateKey;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ public class TodoRepositoryImpl implements TodoRepository {
     @Override
     public List<Todo> findByTaskDescriptionContains(String taskDescription) {
         return todoList.stream()
+
                 .filter(todo -> todo.getTaskDescription().equalsIgnoreCase(taskDescription))
                 .collect(Collectors.toList());
     }
@@ -53,27 +55,38 @@ public class TodoRepositoryImpl implements TodoRepository {
 
     @Override
     public List<Todo> findByDeadLineBetween(LocalDate start, LocalDate end) {
+        Period period = Period.between(start, end);
         return null;
+
     }
 
     @Override
     public List<Todo> findByAssigneeId(int personId) {
-        return null;
+        return todoList.stream()
+                .filter(todo -> todo.getAssignee() != null)
+                .filter(todo -> todo.getAssignee().getPersonId() == personId)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Todo> findAllUnassignedTasks() {
-        return null;
+        return todoList.stream()
+                .filter(todo -> todo.getAssignee() == null)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Todo> findAllAssignedTasks() {
-        return null;
+        return todoList.stream()
+                .filter(todo -> todo.getAssignee() != null)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Todo> findByDone(boolean isDone) {
-        return null;
+        return todoList.stream()
+                .filter(todo -> todo.isDone() == isDone)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -83,7 +96,7 @@ public class TodoRepositoryImpl implements TodoRepository {
 
     @Override
     public boolean delete(int todoId) throws IllegalArgumentException {
-        return false;
+        return todoList.remove(findById(todoId).orElseThrow(IllegalArgumentException::new));
     }
 
     @Override
